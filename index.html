@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEXABYTE | Cyber Intelligence</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap');
+
+        :root {
+            --bg-dark: #020617;
+            --card-bg: #0f172a;
+            --neon-purple: #a855f7;
+            --neon-blue: #3b82f6;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* --- RESPONSIVE SIDEBAR/NAV --- */
+        .sidebar {
+            width: 280px;
+            background: rgba(15, 23, 42, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            padding-top: 2rem;
+        }
+
+        .main-content {
+            margin-left: 280px; /* Offset for desktop sidebar */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+        }
+
+        /* --- STYLING --- */
+        .nav-link {
+            color: #94a3b8;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin: 0.25rem 1rem;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(168, 85, 247, 0.1);
+            color: var(--neon-purple);
+        }
+
+        .card-cyber {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 2rem;
+            height: 100%;
+        }
+
+        .btn-purple {
+            background: linear-gradient(90deg, #7e22ce 0%, #3b82f6 100%);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-purple:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(126, 34, 206, 0.4);
+            color: white;
+        }
+
+        footer {
+            background: rgba(15, 23, 42, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .quiz-option {
+            background: rgba(2, 6, 23, 0.5);
+            border: 1px solid #1e293b;
+            color: #cbd5e1;
+            transition: 0.3s;
+            text-align: left;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--neon-purple);
+            background: rgba(168, 85, 247, 0.05);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark d-lg-none glass border-bottom border-secondary">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold italic" href="#">HEXA<span class="text-purple">BYTE</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mobileNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('landing')">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="startNewQuiz()">Security Quiz</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('scanner')">Threat Detector</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar d-none d-lg-flex flex-column">
+        <div class="px-4 mb-5">
+            <h2 class="h4 fw-bold italic text-uppercase">HEXA<span style="color:var(--neon-purple)">BYTE</span></h2>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link active" id="nav-landing" href="#" onclick="showSection('landing')"><i class="fas fa-th-large me-3"></i> Dashboard</a>
+            <a class="nav-link" id="nav-quiz" href="#" onclick="startNewQuiz()"><i class="fas fa-brain me-3"></i> Security Quiz</a>
+            <a class="nav-link" id="nav-scanner" href="#" onclick="showSection('scanner')"><i class="fas fa-user-secret me-3"></i> Threat Detector</a>
+        </nav>
+        <div class="mt-auto p-4 border-top border-secondary opacity-50 text-center">
+            <small class="mono text-uppercase" style="font-size: 10px; letter-spacing: 2px;">Core v3.0 Active</small>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container py-5 px-md-5">
+            
+            <section id="section-landing">
+                <div class="row g-4 mb-5">
+                    <div class="col-12">
+                        <div class="card-cyber p-lg-5 position-relative overflow-hidden">
+                            <div class="position-relative z-1">
+                                <h6 class="text-purple fw-bold text-uppercase mb-3" style="letter-spacing: 3px; color: var(--neon-purple);">Intelligence Hub</h6>
+                                <h1 class="display-4 fw-black mb-4">DEFEND YOUR <br><span class="text-info">DIGITAL IDENTITY.</span></h1>
+                                <p class="lead text-secondary mb-5 col-lg-8">Welcome to HEXABYTE. Our mission is to train the public to spot scams and secure their accounts through AI analysis and randomized training simulations.</p>
+                                <div class="d-flex flex-wrap gap-3">
+                                    <button onclick="startNewQuiz()" class="btn btn-purple px-5 py-3">START TRAINING</button>
+                                    <button onclick="showSection('scanner')" class="btn btn-outline-light border-secondary px-5 py-3 rounded-3">OPEN DETECTOR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 text-center text-md-start">
+                    <div class="col-md-4">
+                        <div class="card-cyber">
+                            <div class="h3 text-purple mb-3"><i class="fas fa-fingerprint"></i></div>
+                            <h5>AI Heuristics</h5>
+                            <p class="small text-secondary">Paste text into the Threat Detector to scan for malicious psychological patterns.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card-cyber">
+                            <div class="h3 text-info mb-3"><i class="fas fa-shuffle"></i></div>
+                            <h5>Randomized Learning</h5>
+                            <p class="small text-secondary">Every quiz is generated from a large pool of real-world cybersecurity scenarios.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card-cyber">
+                            <div class="h3 text-success mb-3"><i class="fas fa-shield-check"></i></div>
+                            <h5>Safety Scoring</h5>
+                            <p class="small text-secondary">Get immediate remediation advice based on your current security awareness levels.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-quiz" class="d-none">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card-cyber">
+                            <div id="quiz-ui">
+                                <div class="d-flex justify-content-between align-items-center mb-5">
+                                    <h3 class="fw-bold">Security Simulation</h3>
+                                    <div id="quiz-counter" class="mono badge bg-dark p-3 text-purple" style="font-size: 1.2rem; border: 1px solid var(--neon-purple);">1/5</div>
+                                </div>
+                                <h4 id="quiz-question" class="mb-5 lh-base">Loading...</h4>
+                                <div id="quiz-options" class="d-grid gap-2"></div>
+                            </div>
+                            <div id="quiz-result" class="d-none text-center py-5">
+                                <h1 class="display-1 fw-black italic mb-4" id="final-score">0%</h1>
+                                <p id="quiz-advice" class="lead text-secondary mb-5"></p>
+                                <button onclick="startNewQuiz()" class="btn btn-purple">START NEW SIMULATION</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-scanner" class="d-none">
+                <div class="row justify-content-center">
+                    <div class="col-lg-9">
+                        <div class="card-cyber text-center">
+                            <h2 class="fw-bold mb-2">Threat Detector</h2>
+                            <p class="text-secondary mb-5">Llama-3.1 Heuristic Engine</p>
+                            <textarea id="scanner-input" rows="7" class="form-control bg-dark border-secondary text-light p-4 mb-4 mono rounded-4" placeholder="Paste link or email body..."></textarea>
+                            <button id="scan-btn" onclick="analyzeThreat()" class="btn btn-purple w-100 py-3 mb-4"><i class="fas fa-microscope me-2"></i> INITIATE DEEP SCAN</button>
+                            
+                            <div id="scanner-loader" class="d-none py-5">
+                                <div class="spinner-border text-primary mb-3" role="status"></div>
+                                <p class="text-secondary mono small">ANALYZING PAYLOAD VECTORS...</p>
+                            </div>
+
+                            <div id="scanner-result" class="d-none text-start p-4 rounded-4 bg-black">
+                                <h6 class="text-info fw-bold mb-3"><i class="fas fa-clipboard-check me-2"></i> SCAN RESULTS:</h6>
+                                <div id="ai-response-text" class="text-secondary mono small lh-lg"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <footer>
+            <div class="container">
+                <p class="mb-0 text-secondary mono" style="letter-spacing: 4px; font-size: 12px;">
+                    &copy; ROHIT KATTIMANI, 2026 | HEXABYTE CYBER SECURITY AWARENESS
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        
+        const MASTER_QUESTIONS = [
+            { q: "An email says 'Invoice attached' as a .zip file from an unknown sender. Risk?", o: ["Standard billing", "Malware or Ransomware", "Compressed photo", "Low risk"], c: 1 },
+            { q: "You receive an unrequested 2FA code via SMS. Someone calls asking for it. Action?", o: ["Give the code", "Ignore it", "Never share it and report", "Change number"], c: 2 },
+            { q: "What is 'Shoulder Surfing'?", o: ["Hacking at the beach", "Watching someone enter a PIN in public", "Firewall bypass", "Social media stalking"], c: 1 },
+            { q: "Which URL is most suspicious for a bank?", o: ["login.chase.com", "chase-secure-login.net", "chase.com/login", "site.chase.com"], c: 1 },
+            { q: "Why is reusing one password for 10 sites dangerous?", o: ["Hard to remember", "One hack compromises all 10", "Slower to type", "It's not dangerous"], c: 1 },
+            { q: "What is a 'Zero-Day' vulnerability?", o: ["A virus that lasts 24 hours", "A security hole that developers don't know about", "A countdown timer", "A brand new PC"], c: 1 },
+            { q: "You see a public USB charging port at the airport. What is the risk?", o: ["No risk", "Juice Jacking (Malware)", "Slower charging", "Data backup"], c: 1 },
+            { q: "Which 2FA method is MOST secure?", o: ["SMS", "Email", "Hardware Key (YubiKey)", "Secret Question"], c: 2 }
+        ];
+
+        let activeQuestions = [];
+        let currentIdx = 0;
+        let score = 0;
+
+        function showSection(id) {
+            ['landing', 'quiz', 'scanner'].forEach(s => document.getElementById(`section-${s}`).classList.add('d-none'));
+            document.getElementById(`section-${id}`).classList.remove('d-none');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const activeNav = document.getElementById(`nav-${id}`);
+            if(activeNav) activeNav.classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function startNewQuiz() {
+            showSection('quiz');
+            document.getElementById('quiz-ui').classList.remove('d-none');
+            document.getElementById('quiz-result').classList.add('d-none');
+            activeQuestions = [...MASTER_QUESTIONS].sort(() => 0.5 - Math.random()).slice(0, 5);
+            currentIdx = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = activeQuestions[currentIdx];
+            document.getElementById('quiz-counter').innerText = `${currentIdx + 1}/5`;
+            document.getElementById('quiz-question').innerText = q.q;
+            const container = document.getElementById('quiz-options');
+            container.innerHTML = '';
+            q.o.forEach((opt, i) => {
+                const b = document.createElement('button');
+                b.className = "btn quiz-option p-4 rounded-4";
+                b.innerText = opt;
+                b.onclick = () => { if(i === q.c) score++; currentIdx++; if(currentIdx < 5) loadQuestion(); else finishQuiz(); };
+                container.appendChild(b);
+            });
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-ui').classList.add('d-none');
+            document.getElementById('quiz-result').classList.remove('d-none');
+            const pct = (score / 5) * 100;
+            document.getElementById('final-score').innerText = pct + "%";
+            document.getElementById('quiz-advice').innerText = pct > 70 ? "Excellent. You have a high-security IQ." : "Recommendation: Review phishing and 2FA basics.";
+        }
+
+        async function analyzeThreat() {
+            const text = document.getElementById('scanner-input').value.trim();
+            if(!text) return;
+            
+            // UI Logic...
+            const loader = document.getElementById('scanner-loader');
+            const resBox = document.getElementById('scanner-result');
+            const resText = document.getElementById('ai-response-text');
+            const btn = document.getElementById('scan-btn');
+            
+            btn.disabled = true;
+            loader.classList.remove('d-none');
+            resBox.classList.add('d-none');
+        
+            try {
+                // CALL THAT INTERNAL API INSTEAD OF OPENROUTER
+                const response = await fetch("/api/analyze", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                const data = await response.json();
+                
+                // OpenRouter returns choices[0].message.content
+                resText.innerText = data.choices[0].message.content;
+                resBox.classList.remove('d-none');
+            } catch (e) { 
+                resText.innerText = "Error: System Offline."; 
+                resBox.classList.remove('d-none'); 
+            } finally { 
+                loader.classList.add('d-none'); 
+                btn.disabled = false; 
+            }
+        }
+    </script>
+</body>
+</html>
