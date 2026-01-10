@@ -253,15 +253,58 @@
     <script>
         
         const MASTER_QUESTIONS = [
-            { q: "An email says 'Invoice attached' as a .zip file from an unknown sender. Risk?", o: ["Standard billing", "Malware or Ransomware", "Compressed photo", "Low risk"], c: 1 },
-            { q: "You receive an unrequested 2FA code via SMS. Someone calls asking for it. Action?", o: ["Give the code", "Ignore it", "Never share it and report", "Change number"], c: 2 },
-            { q: "What is 'Shoulder Surfing'?", o: ["Hacking at the beach", "Watching someone enter a PIN in public", "Firewall bypass", "Social media stalking"], c: 1 },
-            { q: "Which URL is most suspicious for a bank?", o: ["login.chase.com", "chase-secure-login.net", "chase.com/login", "site.chase.com"], c: 1 },
-            { q: "Why is reusing one password for 10 sites dangerous?", o: ["Hard to remember", "One hack compromises all 10", "Slower to type", "It's not dangerous"], c: 1 },
-            { q: "What is a 'Zero-Day' vulnerability?", o: ["A virus that lasts 24 hours", "A security hole that developers don't know about", "A countdown timer", "A brand new PC"], c: 1 },
-            { q: "You see a public USB charging port at the airport. What is the risk?", o: ["No risk", "Juice Jacking (Malware)", "Slower charging", "Data backup"], c: 1 },
-            { q: "Which 2FA method is MOST secure?", o: ["SMS", "Email", "Hardware Key (YubiKey)", "Secret Question"], c: 2 }
-        ];
+                // --- Original Set ---
+                { q: "An email says 'Invoice attached' as a .zip file from an unknown sender. Risk?", o: ["Standard billing", "Malware or Ransomware", "Compressed photo", "Low risk"], c: 1 },
+                { q: "You receive an unrequested 2FA code via SMS. Someone calls asking for it. Action?", o: ["Give the code", "Ignore it", "Never share it and report", "Change number"], c: 2 },
+                { q: "What is 'Shoulder Surfing'?", o: ["Hacking at the beach", "Watching someone enter a PIN in public", "Firewall bypass", "Social media stalking"], c: 1 },
+                { q: "Which URL is most suspicious for a bank?", o: ["login.chase.com", "chase-secure-login.net", "chase.com/login", "site.chase.com"], c: 1 },
+                { q: "Why is reusing one password for 10 sites dangerous?", o: ["Hard to remember", "One hack compromises all 10", "Slower to type", "It's not dangerous"], c: 1 },
+                { q: "What is a 'Zero-Day' vulnerability?", o: ["A virus that lasts 24 hours", "A security hole that developers don't know about", "A countdown timer", "A brand new PC"], c: 1 },
+                { q: "You see a public USB charging port at the airport. What is the risk?", o: ["No risk", "Juice Jacking (Malware)", "Slower charging", "Data backup"], c: 1 },
+                { q: "Which 2FA method is MOST secure?", o: ["SMS", "Email", "Hardware Key (YubiKey)", "Secret Question"], c: 2 },
+            
+                // --- New Questions: Phishing & Social Engineering ---
+                { q: "A 'CEO' emails you asking for an urgent wire transfer to a new vendor. This is likely:", o: ["Business Email Compromise (BEC)", "Executive privilege", "A standard request", "Company bonus"], c: 0 },
+                { q: "What is 'Vishing'?", o: ["Voice Phishing over the phone", "Visual hacking", "Virtual phishing", "Virus wishing"], c: 0 },
+                { q: "An SMS text says your 'package is delayed' with a weird link. This is called:", o: ["Texting", "Smishing", "Phishing", "Baiting"], c: 1 },
+                { q: "In social engineering, what is 'Tailgating'?", o: ["Following a car", "Following someone into a restricted area without a badge", "Hacking a server", "Monitoring web traffic"], c: 1 },
+                { q: "What is 'Baiting' in cybersecurity?", o: ["Using a fishing rod", "Leaving a malware-infected USB drive for someone to find", "Sending an email", "Updating a firewall"], c: 1 },
+                { q: "A pop-up says 'Your PC is infected! Click here to scan.' This is likely:", o: ["A helpful system tool", "Scareware/Malware", "An Windows update", "A browser feature"], c: 1 },
+                { q: "A 'Watering Hole' attack targets users by:", o: ["Infecting a website the target group frequently visits", "Shutting down the office water", "Hacking the ISP", "Sending bulk spam"], c: 0 },
+                { q: "You get a LinkedIn request from a recruiter asking you to download a 'Job Description.exe'. Risk?", o: ["High: Executable files often contain malware", "Low: Recruiters are safe", "Medium: Only if you have no antivirus", "Low: EXE means Excellent"], c: 0 },
+            
+                // --- New Questions: Network & Web Security ---
+                { q: "What does the 'S' in HTTPS stand for?", o: ["Standard", "System", "Secure", "Socket"], c: 2 },
+                { q: "When using public Wi-Fi (Starbucks/Airport), you should always use a:", o: ["Faster browser", "VPN (Virtual Private Network)", "Incognito window", "New password"], c: 1 },
+                { q: "A 'Man-in-the-Middle' (MITM) attack occurs when:", o: ["A hacker sits between you and the server", "A server crashes", "A password is too short", "You lose internet"], c: 0 },
+                { q: "What is the primary purpose of a Firewall?", o: ["To speed up the internet", "To monitor and filter incoming/outgoing traffic", "To store passwords", "To cool down the CPU"], c: 1 },
+                { q: "What is 'DNS Spoofing'?", o: ["Changing your IP", "Rerouting users to a fake website by corrupting DNS data", "Buying a fake domain", "Sending fake emails"], c: 1 },
+                { q: "A 'Typosquatting' attack involves:", o: ["Hacking a keyboard", "Registering domains that are common misspellings of real sites", "Typing too fast", "Monitoring keystrokes"], c: 1 },
+                { q: "What is the risk of an 'Evil Twin' Wi-Fi hotspot?", o: ["It's too slow", "It mimics a legitimate Wi-Fi name to steal data", "It uses too much battery", "It has no risk"], c: 1 },
+            
+                // --- New Questions: Passwords & Identity ---
+                { q: "Which of these is the strongest password?", o: ["Password123!", "Admin2024", "Correct-Horse-Battery-Staple-7", "MyDogBlue"], c: 2 },
+                { q: "What does a 'Password Manager' help prevent?", o: ["Slow internet", "Password reuse and weak passwords", "Hard drive failure", "Screen glare"], c: 1 },
+                { q: "What is 'Credential Stuffing'?", o: ["Filling out a form", "Using leaked passwords from one site to hack others", "Creating new accounts", "Deleting old emails"], c: 1 },
+                { q: "What is 'Brute Force'?", o: ["Physical damage to a PC", "Automated trial-and-error to guess a password", "A very strong firewall", "Hacking a lock"], c: 1 },
+                { q: "Biometric security (Fingerprint/FaceID) is a form of:", o: ["Something you know", "Something you are", "Something you have", "Something you did"], c: 1 },
+            
+                // --- New Questions: Malware & Technical ---
+                { q: "What does 'Ransomware' do?", o: ["Displays ads", "Encrypts your files and demands money", "Steals your webcam feed", "Deletes your browser history"], c: 1 },
+                { q: "A 'Keylogger' is a type of spyware that:", o: ["Records every keystroke you type", "Unlocks your doors", "Speeds up typing", "Changes your wallpaper"], c: 0 },
+                { q: "What is a 'Botnet'?", o: ["A chat robot", "A network of infected 'zombie' computers", "A group of IT experts", "A safe cloud network"], c: 1 },
+                { q: "A 'Trojan' horse malware is named such because:", o: ["It is very fast", "It disguises itself as legitimate software", "It only affects Greek PCs", "It is very large"], c: 1 },
+                { q: "What is a 'Rootkit'?", o: ["A plant-based virus", "Malware that grants hidden admin access", "A Windows repair tool", "A type of router"], c: 1 },
+                { q: "The 'Principle of Least Privilege' means:", o: ["Giving everyone admin rights", "Giving users only the access they need to do their job", "Having no passwords", "Paying employees less"], c: 1 },
+            
+                // --- New Questions: Privacy & Habits ---
+                { q: "A flashlight app on your phone asks for 'Location' and 'Contacts'. You should:", o: ["Allow it", "Deny/Uninstall: It's over-privileged", "Update the app", "Buy a new phone"], c: 1 },
+                { q: "Why should you lock your computer screen (Win+L) when leaving your desk?", o: ["To save electricity", "To prevent physical unauthorized access", "To clear the RAM", "To update Windows"], c: 1 },
+                { q: "What is 'Doxing'?", o: ["A type of medicine", "Publishing private info about someone online with malicious intent", "Scanning a document", "Testing for viruses"], c: 1 },
+                { q: "What should you do with sensitive paper documents before throwing them away?", o: ["Recycle them", "Shred them", "Put them in the trash", "Store them in a box"], c: 1 },
+                { q: "If you think your work laptop is infected, you should first:", o: ["Try to fix it yourself", "Disconnect from the network and contact IT", "Restart it 10 times", "Format the hard drive"], c: 1 },
+                { q: "What is the 'Dark Web' commonly used for by criminals?", o: ["Buying groceries", "Selling stolen data and credentials", "Free movies", "Social media"], c: 1 }
+            ];
 
         let activeQuestions = [];
         let currentIdx = 0;
