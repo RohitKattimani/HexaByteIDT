@@ -5,7 +5,7 @@
 ---
 
 ## 1. Ownership and Intellectual Property
-The software known as **HEXABYTE (Core v3.0)**, including but not limited to its source code, design, logic, graphics, branding, and simulation scenarios, is the exclusive intellectual property of **Rohit Kattimani**.
+The software known as **HEXABYTE (Core v4.0)**, including but not limited to its source code, design, logic, graphics, branding, and simulation scenarios, is the exclusive intellectual property of **Rohit Kattimani**.
 
 ---
 
