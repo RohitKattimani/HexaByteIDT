@@ -114,6 +114,26 @@
             background: rgba(168, 85, 247, 0.05);
             color: white;
         }
+        /* --- LEARNING CENTER STYLES --- */
+        .chapter-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(145deg, #0f172a 0%, #020617 100%);
+        }
+        .chapter-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--neon-purple) !important;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
+        }
+        #reader-content h4 {
+            color: var(--neon-purple);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--neon-purple);
+            padding-left: 1rem;
+            margin-top: 2rem;
+        }
+        #reader-content b { color: var(--neon-blue); }
+        .bg-purple { background-color: var(--neon-purple) !important; }
     </style>
 </head>
 <body>
@@ -127,6 +147,7 @@
             <div class="collapse navbar-collapse" id="mobileNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('landing')">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('learning')">Learning Center</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" onclick="startNewQuiz()">Security Quiz</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('scanner')">Threat Detector</a></li>
                 </ul>
@@ -140,11 +161,12 @@
         </div>
         <nav class="nav flex-column">
             <a class="nav-link active" id="nav-landing" href="#" onclick="showSection('landing')"><i class="fas fa-th-large me-3"></i> Dashboard</a>
+            <a class="nav-link" id="nav-learning" href="#" onclick="showSection('learning')"><i class="fas fa-book-open me-3"></i> Learning Center</a>
             <a class="nav-link" id="nav-quiz" href="#" onclick="startNewQuiz()"><i class="fas fa-brain me-3"></i> Security Quiz</a>
             <a class="nav-link" id="nav-scanner" href="#" onclick="showSection('scanner')"><i class="fas fa-user-secret me-3"></i> Threat Detector</a>
         </nav>
         <div class="mt-auto p-4 border-top border-secondary opacity-50 text-center">
-            <small class="mono text-uppercase" style="font-size: 10px; letter-spacing: 2px;">Core v3.0 Active</small>
+            <small class="mono text-uppercase" style="font-size: 10px; letter-spacing: 2px;">Core v4.0 Active</small>
         </div>
     </div>
 
@@ -179,8 +201,8 @@
                     <div class="col-md-4">
                         <div class="card-cyber">
                             <div class="h3 text-info mb-3"><i class="fas fa-shuffle"></i></div>
-                            <h5>Randomized Learning</h5>
-                            <p class="small text-secondary">Every quiz is generated from a large pool of real-world cybersecurity scenarios.</p>
+                            <h5>Guided Learning</h5>
+                            <p class="small text-secondary">Guided chapters with quizzes pulled from large pool of real-world cybersecurity scenarios.</p>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -192,6 +214,45 @@
                     </div>
                 </div>
             </section>
+
+            <section id="section-learning" class="d-none">
+                <div class="row mb-5 align-items-center">
+                    <div class="col-md-8 text-center text-md-start">
+                        <h2 class="fw-bold mb-1">Cyber Intelligence <span style="color:var(--neon-purple)">Academy</span></h2>
+                        <p class="text-secondary mono small text-uppercase" style="letter-spacing: 2px;">Multilingual Security Training Modules</p>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select bg-dark text-light border-secondary mono" id="lang-selector" onchange="changeLanguage(this.value)">
+                            <option value="en">English</option>
+                            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                            <option value="hi">हिन्दी (Hindi)</option>
+                            <option value="te">తెలుగు (Telugu)</option>
+                            <option value="ta">தமிழ் (Tamil)</option>
+                            <option value="ml">മലയാളം (Malayalam)</option>
+                            <option value="bn">বাংলা (Bengali)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-4" id="chapters-container">
+                    </div>
+            </section>
+
+            <div class="modal fade" id="readerModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-fullscreen-md-down modal-lg modal-dialog-scrollable">
+                    <div class="modal-content border-0 bg-dark text-light">
+                        <div class="modal-header border-secondary px-4 py-3" style="background: var(--card-bg);">
+                            <div class="d-flex align-items-center">
+                                <div id="reader-icon" class="h4 me-3 mb-0" style="color:var(--neon-purple)"></div>
+                                <h5 class="modal-title fw-bold" id="reader-title">Chapter Title</h5>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4 p-md-5" id="reader-content" style="background: #020617; line-height: 1.8;">
+                            </div>
+                    </div>
+                </div>
+            </div>
 
             <section id="section-quiz" class="d-none">
                 <div class="row justify-content-center">
@@ -312,13 +373,140 @@
         let score = 0;
 
         function showSection(id) {
-            ['landing', 'quiz', 'scanner'].forEach(s => document.getElementById(`section-${s}`).classList.add('d-none'));
+            ['landing', 'quiz', 'scanner', 'learning'].forEach(s => document.getElementById(`section-${s}`).classList.add('d-none'));
             document.getElementById(`section-${id}`).classList.remove('d-none');
             
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             const activeNav = document.getElementById(`nav-${id}`);
             if(activeNav) activeNav.classList.add('active');
             window.scrollTo(0,0);
+
+            if(id === 'learning') renderChapters();
+            window.scrollTo(0,0);
+        }
+
+        let currentAcademyLang = 'en';
+
+        const UI_LABELS = {
+            en: { open: "OPEN CHAPTER", chapter: "Chapter", awareness: "Awareness", technical: "Technical" },
+            kn: { open: "ಓಪನ್ ಮಾಡಿ", chapter: "ಅಧ್ಯಾಯ", awareness: "ಜಾಗೃತಿ", technical: "ತಾಂತ್ರಿಕ" },
+            hi: { open: "चैप्टर खोलें", chapter: "अध्याय", awareness: "जागरूकता", technical: "तकनीकी" },
+            te: { open: "చాప్టర్ తెరువు", chapter: "అధ్యాయం", awareness: "అవగాహన", technical: "సాంకేతిక" },
+            ta: { open: "திறக்க", chapter: "அத்தியாயம்", awareness: "விழிப்புணர்வு", technical: "தொழில்நுட்ப" },
+            ml: { open: "തുറക്കുക", chapter: "അദ്ധ്യായം", awareness: "അവബോധം", technical: "സാങ്കേതികം" },
+            bn: { open: "অধ্যায় খুলুন", chapter: "অধ্যায়", awareness: "সচেতনতা", technical: "প্রযুক্তিগত" }
+        };
+
+        const ACADEMY_DB = {
+            en: [
+                { id: 1, type: 'Awareness', icon: 'fa-fish', title: 'Phishing Scams', desc: 'Spot fake emails and links.', content: '<h4>Phishing 101</h4><p>Attackers pretend to be trusted entities (Banks, Netflix) to steal credentials.</p><b>Red Flags:</b><ul><li>Urgent language</li><li>Suspicious sender domain</li><li>Generic greetings</li></ul>' },
+                { id: 2, type: 'Technical', icon: 'fa-key', title: 'Password Entropy', desc: 'The math behind strong keys.', content: '<h4>What is Entropy?</h4><p>Entropy measures the randomness of a password. A 12-character random string is harder to crack than a 20-character common phrase.</p>' },
+                { id: 3, type: 'Awareness', icon: 'fa-mobile-alt', title: '2FA/MFA', desc: 'Double your protection.', content: '<h4>Multi-Factor Authentication</h4><p>Even if a hacker has your password, 2FA prevents access by requiring a second "factor" like an OTP or Hardware Key.</p>' },
+                { id: 4, type: 'Technical', icon: 'fa-wifi', title: 'Public Wi-Fi Risks', desc: 'Packet sniffing explained.', content: '<h4>Man-in-the-Middle</h4><p>On public Wi-Fi, attackers can intercept your data packets using tools like Wireshark. Always use a VPN.</p>' },
+                { id: 5, type: 'Technical', icon: 'fa-bug', title: 'Ransomware', desc: 'Encryption used as a weapon.', content: '<h4>How it works</h4><p>Ransomware encrypts your files and demands payment in Bitcoin. Solution: Offline backups.</p>' },
+                { id: 6, type: 'Awareness', icon: 'fa-users-slash', title: 'Social Engineering', desc: 'Psychological manipulation.', content: '<h4>Human Hacking</h4><p>Techniques like "Pretexting" and "Baiting" trick people into revealing sensitive info.</p>' }
+            ],
+
+            kn: [
+                { id: 1, type: 'Awareness', icon: 'fa-fish', title: 'ಫಿಶಿಂಗ್ ಸ್ಕ್ಯಾಮ್‌ಗಳು', desc: 'ನಕಲಿ ಇಮೇಲ್‌ಗಳು ಮತ್ತು ಲಿಂಕ್‌ಗಳನ್ನು ಗುರುತಿಸಿ.', content: '<h4>ಫಿಶಿಂಗ್ 101</h4><p>ದಾಳಿಕೋರರು ಬ್ಯಾಂಕ್‌ಗಳು ಅಥವಾ ಸೇವೆಗಳಂತೆ ನಟಿಸಿ ನಿಮ್ಮ ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು ಕದಿಯುತ್ತಾರೆ.</p><b>ಎಚ್ಚರಿಕೆ ಸೂಚನೆಗಳು:</b><ul><li>ತುರ್ತು ಭಾಷೆ</li><li>ಸಂದೇಶದ ಅನುಮಾನಾಸ್ಪದ ಡೊಮೇನ್</li><li>ಸಾಮಾನ್ಯ ಸ್ವಾಗತಗಳು</li></ul>' },
+                { id: 2, type: 'Technical', icon: 'fa-key', title: 'ಪಾಸ್‌ವರ್ಡ್ ಎಂಟ್ರೋಪಿ', desc: 'ಬಲಿಷ್ಠ ಕೀಲಿಗಳ ಹಿಂದಿನ ಗಣಿತ.', content: '<h4>ಎಂಟ್ರೋಪಿ ಎಂದರೆ ಏನು?</h4><p>ಎಂಟ್ರೋಪಿ ಪಾಸ್‌ವರ್ಡ್‌ನ ಯಾದೃಚ್ಛಿಕತೆಯನ್ನು ಅಳೆಯುತ್ತದೆ. 12 ಅಕ್ಷರಗಳ ಯಾದೃಚ್ಛಿಕ ಸರಣಿಯನ್ನು 20 ಅಕ್ಷರಗಳ ಸಾಮಾನ್ಯ ವಾಕ್ಯಕ್ಕಿಂತ ಭೇದಿಸಲು ಕಷ್ಟ.</p>' },
+                { id: 3, type: 'Awareness', icon: 'fa-mobile-alt', title: '2FA/MFA', desc: 'ನಿಮ್ಮ ರಕ್ಷಣೆಯನ್ನು ದ್ವಿಗುಣಗೊಳಿಸಿ.', content: '<h4>ಮಲ್ಟಿ-ಫ್ಯಾಕ್ಟರ್ ಪ್ರಾಮಾಣೀಕರಣ</h4><p>ಹ್ಯಾಕರ್ ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಹೊಂದಿದ್ದರೂ ಸಹ, 2FA ಎರಡನೇ "ಘಟಕ" (OTP ಅಥವಾ ಹಾರ್ಡ್‌ವೇರ್ ಕೀ) ಬೇಕಾಗುತ್ತದೆ ಮತ್ತು ಪ್ರವೇಶವನ್ನು ತಡೆಯುತ್ತದೆ.</p>' },
+                { id: 4, type: 'Technical', icon: 'fa-wifi', title: 'ಸಾರ್ವಜನಿಕ ವೈ-ಫೈ ಅಪಾಯಗಳು', desc: 'ಪ್ಯಾಕೆಟ್ ಸ್ನಿಫಿಂಗ್ ವಿವರಿಸಲಾಗಿದೆ.', content: '<h4>ಮ್ಯಾನ್-ಇನ್-ದಿ-ಮಿಡಲ್</h4><p>ಸಾರ್ವಜನಿಕ ವೈ-ಫೈಯಲ್ಲಿ ದಾಳಿಕೋರರು Wireshark ಹೋಲಾದ ಸಾಧನಗಳನ್ನು ಬಳಸಿ ನಿಮ್ಮ ಡೇಟಾ ಪ್ಯಾಕೆಟ್‌ಗಳನ್ನು ಮಧ್ಯಸ್ಥವಾಗಿ ಹಿಡಿದುಕೊಳ್ಳಬಹುದು. ಸದಾ VPN ಬಳಸಿ.</p>' },
+                { id: 5, type: 'Technical', icon: 'fa-bug', title: 'ರಾನ್ಸಮ್‌ವೇರ್', desc: 'ಎನ್‌ಕ್ರಿಪ್ಷನ್ ಅನ್ನು ಆಯುಧವಾಗಿ ಬಳಸುವುದು.', content: '<h4>ಇದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ</h4><p>ರಾನ್ಸಮ್‌ವೇರ್ ನಿಮ್ಮ ಫೈಲ್‌ಗಳನ್ನು ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿ ಬಿಟ್‌ಕಾಯಿನ್‌ನಲ್ಲಿ ಪಾವತಿ ಬೇಡುತ್ತದೆ. ಪರಿಹಾರ: ಆಫ್‌ಲೈನ್ ಬ್ಯಾಕ್ಅಪ್‌ಗಳು.</p>' },
+                { id: 6, type: 'Awareness', icon: 'fa-users-slash', title: 'ಸೋಶಿಯಲ್ ಎಂಜಿನಿಯರಿಂಗ್', desc: 'ಮಾನಸಿಕ манಿಪ್ಯುಲೇಷನ್.', content: '<h4>ಮಾನವ ಹ್ಯಾಕಿಂಗ್</h4><p>"ಪ್ರಿಟೆಕ್ಸ್ಟಿಂಗ್" ಮತ್ತು "ಬೇಟಿಂಗ್" ಹೀಗೆ ತಂತ್ರಗಳು ಜನರನ್ನು ಸಂವೇದನಾಶೀಲ ಮಾಹಿತಿಯನ್ನು ಬಹಿರಂಗಪಡಿಸಲು ಮೋಸಗೊಳಿಸುತ್ತವೆ.</p>' }
+            ],
+
+            hi: [
+                { id: 1, type: 'Awareness', icon: 'fa-fish', title: 'फ़िशिंग घोटाले', desc: 'नकली ईमेल और लिंक पहचानें।', content: '<h4>फ़िशिंग 101</h4><p>हमलावर भरोसेमंद संस्थाओं (बैंक, Netflix) का नाटक करके क्रेडेंशियल चुराते हैं।</p><b>सावधान संकेत:</b><ul><li>तत्काल कार्रवाई की भाषा</li><li>संदिग्ध प्रेषक डोमेन</li><li>सामान्य अभिवादन</li></ul>' },
+                { id: 2, type: 'Technical', icon: 'fa-key', title: 'पासवर्ड एंट्रॉपी', desc: 'मजबूत कुंजियों के पीछे का गणित।', content: '<h4>एंट्रॉपी क्या है?</h4><p>एंट्रॉपी पासवर्ड की यादृच्छिकता को मापती है। 12-अक्षर का यादृच्छिक स्ट्रिंग 20-अक्षर के सामान्य वाक्य की तुलना में तोड़ना कठिन है।</p>' },
+                { id: 3, type: 'Awareness', icon: 'fa-mobile-alt', title: '2FA/MFA', desc: 'अपनी सुरक्षा दोगुनी करें।', content: '<h4>मल्टी-फैक्टर प्रमाणीकरण</h4><p>यदि हैकर के पास आपका पासवर्ड भी हो, तो 2FA एक दूसरा "फैक्टर" जैसे OTP या हार्डवेयर की मांग करके पहुँच रोकता है।</p>' },
+                { id: 4, type: 'Technical', icon: 'fa-wifi', title: 'पब्लिक वाई-फाई जोखिम', desc: 'पैकेट स्निफिंग समझाया गया।', content: '<h4>मैन-इन-द-मिडल</h4><p>पब्लिक वाई-फाई पर हमलावर Wireshark जैसे टूल से आपके डेटा पैकेट इंटरसेप्ट कर सकते हैं। हमेशा VPN का उपयोग करें।</p>' },
+                { id: 5, type: 'Technical', icon: 'fa-bug', title: 'रैनसमवेयर', desc: 'एन्क्रिप्शन को हथियार के रूप में उपयोग करना।', content: '<h4>यह कैसे काम करता है</h4><p>रैनसमवेयर आपकी फाइलों को एन्क्रिप्ट कर देता है और बिटकॉइन में भुगतान की मांग करता है। समाधान: ऑफ़लाइन बैकअप।</p>' },
+                { id: 6, type: 'Awareness', icon: 'fa-users-slash', title: 'सोशल इंजीनियरिंग', desc: 'मनोवैज्ञानिक चालबाज़ी।', content: '<h4>मानव हैकिंग</h4><p>"प्रिटेक्स्टिंग" और "बेटिंग" जैसी तकनीकें लोगों को संवेदनशील जानकारी बताने के लिए धोखा देती हैं।</p>' }
+            ],
+
+            te: [
+                { id: 1, type: 'Awareness', icon: 'fa-fish', title: 'ఫిషింగ్ స్కామ్స్', desc: 'నకిలీ ఇమెయిళ్లు మరియు లింక్‌లను గుర్తించండి.', content: '<h4>ఫిషింగ్ 101</h4><p>దాడికారులు బ్యాంకులు లేదా సేవలుగా నటించి మీ క్రెడెన్షియల్స్‌ను దొంగిలిస్తారు.</p><b>ఎచ్చరించాల్సిన సంకేతాలు:</b><ul><li>తక్షణ చర్య కోరే భాష</li><li>సందేహాస్పద పంపినవారి డొమైన్</li><li>సాధారణ అభివాదనలు</li></ul>' },
+                { id: 2, type: 'Technical', icon: 'fa-key', title: 'పాస్వర్డ్ ఎంట్రోపీ', desc: 'బలమైన కీలు వెనుక గణితం.', content: '<h4>ఎంట్రోపీ అంటే ఏమిటి?</h4><p>ఎంట్రోపీ పాస్వర్డ్ యొక్క యాదృచ్ఛికతను కొలుస్తుంది. 12 అక్షరాల యాదృచ్ఛిక స్ట్రింగ్‌ను 20 అక్షరాల సాధారణ వాక్యంతో పోల్చితే బ్రేక్ చేయడం కష్టం.</p>' },
+                { id: 3, type: 'Awareness', icon: 'fa-mobile-alt', title: '2FA/MFA', desc: 'మీ రక్షణను రెట్టింపు చేయండి.', content: '<h4>మల్టీ-ఫ్యాక్టర్ ఆథెంటికేషన్</h4><p>హ్యాకర్‌కు మీ పాస్వర్డ్ ఉన్నా కూడా, 2FA OTP లేదా హార్డ్‌వేర్ కీ వంటి రెండవ "ఫ్యాక్టర్"ను కోరుతూ ప్రవేశాన్ని నిరోధిస్తుంది.</p>' },
+                { id: 4, type: 'Technical', icon: 'fa-wifi', title: 'పబ్లిక్ వై-ఫై ప్రమాదాలు', desc: 'ప్యాకెట్ స్నిఫింగ్ వివరించబడింది.', content: '<h4>మ్యాన్-ఇన్-ది-మిడిల్</h4><p>పబ్లిక్ వై-ఫైపై దాడికారులు Wireshark వంటి టూల్స్ ఉపయోగించి మీ డేటా ప్యాకెట్లను మధ్యలోనే పట్టుకోవచ్చు. ఎప్పుడూ VPN ఉపయోగించండి.</p>' },
+                { id: 5, type: 'Technical', icon: 'fa-bug', title: 'రాన్సమ్‌వేర్', desc: 'ఎన్‌క్రిప్షన్‌ను ఆయుధంగా ఉపయోగించడం.', content: '<h4>ఇది ఎలా పనిచేస్తుంది</h4><p>రాన్సమ్‌వేర్ మీ ఫైళ్లను ఎన్‌క్రిప్ట్ చేసి బిట్‌కాయిన్‌లో చెల్లింపును కోరుతుంది. పరిష్కారం: ఆఫ్‌లైన్ బ్యాకప్‌లు.</p>' },
+                { id: 6, type: 'Awareness', icon: 'fa-users-slash', title: 'సోషల్ ఇంజనీరింగ్', desc: 'మనోवैజ్ఞానిక మోసాలు.', content: '<h4>మానవ హ్యాకింగ్</h4><p>"ప్రిటెక్స్టింగ్" మరియు "బేటింగ్" వంటి సాంకేతికతలు ప్రజలను సున్నితమైన సమాచారాన్ని వెల్లడించడానికి మోసగిస్తాయి.</p>' }
+            ],
+
+            ta: [
+                { id: 1, type: 'Awareness', icon: 'fa-fish', title: 'பிஷிங் மோசடிகள்', desc: 'போலி மின்னஞ்சல்கள் மற்றும் இணைப்புகளை கண்டறியவும்.', content: '<h4>பிஷிங் 101</h4><p>தாக்குதலாளர்கள் வங்கி அல்லது சேவைகள் போல நடித்து உங்கள் அங்கீகாரத் தகவலை திருடுவர்.</p><b>எச்சரிக்கை குறியீடுகள்:</b><ul><li>அவசரத் தகவல் மொழி</li><li>சந்தேகமான அனுப்புநர் டொமைன்</li><li>பொதுவான வாழ்த்துக்கள்</li></ul>' },
+                { id: 2, type: 'Technical', icon: 'fa-key', title: 'கடவுச்சொல் எண்ட்ரோபி', desc: 'வலுவான விசைகளின் பின்னணி கணிதம்.', content: '<h4>எண்ட்ரோபி என்றால் என்ன?</h4><p>எண்ட்ரோபி கடவுச்சொல்லின் சீரற்ற தன்மையை அளவிடுகிறது. 12 எழுத்துகளின் சீரற்ற தொடர் 20 எழுத்துகளின் பொதுவான வாக்கியத்தைவிட உடைக்க கடினம்.</p>' },
+                { id: 3, type: 'Awareness', icon: 'fa-mobile-alt', title: '2FA/MFA', desc: 'உங்கள் பாதுகாப்பை இரட்டிப்பாக்குங்கள்.', content: '<h4>பல-காரண அங்கீகாரம்</h4><p>ஹேக்கரிடம் உங்கள் கடவுச்சொல் இருந்தாலும், 2FA OTP அல்லது ஹார்ட்வேர் விசை போன்ற இரண்டாவது "காரணம்" கேட்டு அணுகலை தடுக்கிறது.</p>' },
+                { id: 4, type: 'Technical', icon: 'fa-wifi', title: 'பொது வை-ஃபை அபாயங்கள்', desc: 'பேக்கெட் ஸ்னிபிங் விளக்கம்.', content: '<h4>மேன்-இன்-தி-மிடில்</h4><p>பொது வை-ஃபையில் தாக்குதலாளர்கள் Wireshark போன்ற கருவிகளைப் பயன்படுத்தி உங்கள் தரவு பேக்கெட்டுகளை இடையில் பிடிக்கலாம். எப்போதும் VPN பயன்படுத்தவும்.</p>' },
+                { id: 5, type: 'Technical', icon: 'fa-bug', title: 'ரான்சம்்வேர்', desc: 'கோப்புகளை குறியாக்கம் செய்து ஆயுதமாக பயன்படுத்துதல்.', content: '<h4>இது எப்படி வேலை செய்கிறது</h4><p>ரான்சம்்வேர் உங்கள் கோப்புகளை குறியாக்கம் செய்து பிட்காயினில் கட்டணம் கோருகிறது. தீர்வு: ஆஃப்லைன் பேக்க்அப்.</p>' },
+                { id: 6, type: 'Awareness', icon: 'fa-users-slash', title: 'சோசியல் இன்ஜினியரிங்', desc: 'மனோதத்துவ மாயை.', content: '<h4>மனித ஹேக்கிங்</h4><p>"பிரிடெக்ஸ்டிங்" மற்றும் "பேட்டிங்" போன்ற தொழில்நுட்பங்கள் மக்களை நுணுக்கமான தகவலை பகிரச் செய்ய மோசடிக்கின்றன.</p>' }
+            ],
+
+            ml: [
+                { id: 1, type: 'Awareness', icon: 'fa-fish', title: 'ഫിഷിംഗ് തട്ടിപ്പുകൾ', desc: 'വ്യാജ ഇമെയിലുകളും ലിങ്കുകളും തിരിച്ചറിയുക.', content: '<h4>ഫിഷിംഗ് 101</h4><p>ആക്രമണകാരികൾ ബാങ്കുകൾ അല്ലെങ്കിൽ സേവനങ്ങൾ പോലെ നടിച്ച് നിങ്ങളുടെ ക്രെഡൻഷ്യലുകൾ മോഷ്ടിക്കുന്നു.</p><b>എಚ್ಚരിക്കേണ്ട ലക്ഷണങ്ങൾ:</b><ul><li>തൽക്ഷണ നടപടി ആവശ്യപ്പെടുന്ന ഭാഷ</li><li>സന്ദേഹാസ്പദമായ അയച്ചവരുടെ ഡൊമെയ്ൻ</li><li>സാധാരണ അഭിവാദ്യങ്ങൾ</li></ul>' },
+                { id: 2, type: 'Technical', icon: 'fa-key', title: 'പാസ്‌വേഡ് എന്റ്രോപി', desc: 'ശക്തമായ കീകളുടെ പിന്നിലെ ഗണിതം.', content: '<h4>എന്റ്രോപി എന്താണ്?</h4><p>എന്റ്രോപി ഒരു പാസ്‌വേഡിന്റെ യാദൃച്ഛികത അളക്കുന്നു. 12 അക്ഷരമുള്ള യാദൃച്ഛിക സ്ട്രിംഗ് 20 അക്ഷരമുള്ള സാധാരണ വാചകത്തേക്കാൾ തകർക്കാൻ ബുദ്ധിമുട്ടാണ്.</p>' },
+                { id: 3, type: 'Awareness', icon: 'fa-mobile-alt', title: '2FA/MFA', desc: 'നിങ്ങളുടെ സംരക്ഷണം ഇരട്ടിയാക്കുക.', content: '<h4>മൾട്ടി-ഫാക്ടർ ഓതന്റിക്കേഷൻ</h4><p>ഹാക്കറിന് നിങ്ങളുടെ പാസ്‌വേഡ് ഉണ്ടെങ്കിലും, 2FA OTP അല്ലെങ്കിൽ ഹാർഡ്‌വെയർ കീ പോലുള്ള രണ്ടാം "ഫാക്ടർ" ആവശ്യപ്പെടുന്നു, അതിലൂടെ പ്രവേശനം തടയുന്നു.</p>' },
+                { id: 4, type: 'Technical', icon: 'fa-wifi', title: 'പബ്ലിക് വൈ-ഫൈ അപകടങ്ങൾ', desc: 'പാക്കറ്റ് സ്നിഫിംഗ് വിശദീകരിച്ചു.', content: '<h4>മാൻ-ഇൻ-ദി-മിഡിൽ</h4><p>പബ്ലിക് വൈ-ഫൈയിൽ ആക്രമണക്കാർ Wireshark പോലുള്ള ടൂളുകൾ ഉപയോഗിച്ച് നിങ്ങളുടെ ഡാറ്റ പാക്കറ്റുകൾ ഇടയിൽ പിടിച്ചെടുക്കാം. എപ്പോഴും VPN ഉപയോഗിക്കുക.</p>' },
+                { id: 5, type: 'Technical', icon: 'fa-bug', title: 'റാൻസംവെയർ', desc: 'എൻക്രിപ്ഷൻ ആയുധമായി ഉപയോഗിക്കുന്നു.', content: '<h4>എങ്ങനെ പ്രവർത്തിക്കുന്നു</h4><p>റാൻസംവെയർ നിങ്ങളുടെ ഫയലുകൾ എൻക്രിപ്റ്റ് ചെയ്ത് ബിറ്റ്കോയിനിൽ പണം ആവശ്യപ്പെടുന്നു. പരിഹാരം: ഓഫ്‌ലൈൻ ബാക്കപ്പുകൾ.</p>' },
+                { id: 6, type: 'Awareness', icon: 'fa-users-slash', title: 'സോഷ്യൽ എൻജിനീയറിംഗ്', desc: 'മനോവൈജ്ഞാനിക മായാജാലം.', content: '<h4>മാനവ ഹാക്കിംഗ്</h4><p>"പ്രിറ്റെക്സ്റ്റിംഗ്" மற்றும் "ബൈറ്റിംഗ്" പോലുള്ള സാങ്കേതികതകൾ ആളുകളെ സംവേദനശീലമായ വിവരങ്ങൾ വെളിപ്പെടുത്താൻ തട്ടിപ്പു നടത്തുന്നു.</p>' }
+            ],
+
+            bn: [
+                { id: 1, type: 'Awareness', icon: 'fa-fish', title: 'ফিশিং স্ক্যাম', desc: 'ভুয়া ইমেল এবং লিঙ্ক চিনুন।', content: '<h4>ফিশিং 101</h4><p>আক্রমণকারীরা ব্যাংক বা সার্ভিসের মতো ভান করে আপনার ক্রেডেনশিয়াল চুরি করে।</p><b>সতর্কতা চিহ্ন:</b><ul><li>তাত্ক্ষণিক কাজের ভাষা</li><li>সন্দেহজনক প্রেরকের ডোমেইন</li><li>সাধারণ অভিবাদন</li></ul>' },
+                { id: 2, type: 'Technical', icon: 'fa-key', title: 'পাসওয়ার্ড এন্ট্রপি', desc: 'মজবুত কী-এর পেছনের গণিত।', content: '<h4>এন্ট্রপি কী?</h4><p>এন্ট্রপি একটি পাসওয়ার্ডের র‍্যান্ডমনেস মাপে। 12-অক্ষরের র‍্যান্ডম স্ট্রিং 20-অক্ষরের সাধারণ বাক্যের চেয়ে ভাঙতে কঠিন।</p>' },
+                { id: 3, type: 'Awareness', icon: 'fa-mobile-alt', title: '2FA/MFA', desc: 'আপনার সুরক্ষা দ্বিগুণ করুন।', content: '<h4>মাল্টি-ফ্যাক্টর অথেন্টিকেশন</h4><p>হ্যাকারের কাছে আপনার পাসওয়ার্ড থাকলেও, 2FA একটি দ্বিতীয় "ফ্যাক্টর" (OTP বা হার্ডওয়্যার কী) চেয়ে প্রবেশ রোধ করে।</p>' },
+                { id: 4, type: 'Technical', icon: 'fa-wifi', title: 'পাবলিক ওয়াই-ফাই ঝুঁকি', desc: 'প্যাকেট স্নিফিং ব্যাখ্যা করা হয়েছে।', content: '<h4>ম্যান-ইন-দ্য-মিডল</h4><p>পাবলিক ওয়াই-ফাইতে আক্রমণকারীরা Wireshark-এর মতো টুল ব্যবহার করে আপনার ডেটা প্যাকেট ইন্টারসেপ্ট করতে পারে। সবসময় VPN ব্যবহার করুন।</p>' },
+                { id: 5, type: 'Technical', icon: 'fa-bug', title: 'র‍্যানসমওয়্যার', desc: 'এনক্রিপশনকে অস্ত্র হিসেবে ব্যবহার।', content: '<h4>এটি কীভাবে কাজ করে</h4><p>র‍্যানসমওয়্যার আপনার ফাইল এনক্রিপ্ট করে এবং বিটকয়েনে অর্থ দাবি করে। সমাধান: অফলাইন ব্যাকআপ।</p>' },
+                { id: 6, type: 'Awareness', icon: 'fa-users-slash', title: 'সোশ্যাল ইঞ্জিনিয়ারিং', desc: 'মনস্তাত্ত্বিক প্রতারণা।', content: '<h4>মানব হ্যাকিং</h4><p>"প্রিটেক্সটিং" এবং "বেটিং" এর মতো কৌশল মানুষকে সংবেদনশীল তথ্য প্রকাশ করতে প্রতারণা করে।</p>' }
+            ]
+        };
+
+        function changeLanguage(lang) {
+            currentAcademyLang = lang;
+            renderChapters();
+        }
+
+        function renderChapters() {
+            const container = document.getElementById('chapters-container');
+            const chapters = ACADEMY_DB[currentAcademyLang] || ACADEMY_DB['en'];
+            const labels = UI_LABELS[currentAcademyLang] || UI_LABELS['en'];
+            
+            container.innerHTML = chapters.map(ch => `
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-cyber h-100 p-4 border border-secondary chapter-card" onclick="readChapter(${ch.id})" style="cursor: pointer;">
+                        <div class="d-flex justify-content-between mb-4">
+                            <div class="h3" style="color:var(--neon-purple)"><i class="fas ${ch.icon}"></i></div>
+                            <span class="badge ${ch.type === 'Technical' ? 'bg-info' : 'bg-purple'} small mono">
+                                ${ch.type === 'Technical' ? labels.technical : labels.awareness}
+                            </span>
+                        </div>
+                        <div>
+                            <small class="text-secondary mono text-uppercase" style="font-size: 10px;">
+                                ${labels.chapter} ${ch.id}
+                            </small>
+                            <h5 class="fw-bold text-white mt-1">${ch.title}</h5>
+                        </div>
+                        <p class="text-secondary small mt-2">${ch.desc}</p>
+                        <div class="mt-4 small mono text-uppercase fw-bold" style="color:var(--neon-purple); letter-spacing: 1px;">
+                            ${labels.open} <i class="fas fa-arrow-right ms-1"></i>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function readChapter(id) {
+            const chapters = ACADEMY_DB[currentAcademyLang] || ACADEMY_DB['en'];
+            const chapter = chapters.find(c => c.id === id);
+            if(!chapter) return;
+
+            document.getElementById('reader-title').innerText = chapter.title;
+            document.getElementById('reader-icon').innerHTML = `<i class="fas ${chapter.icon}"></i>`;
+            document.getElementById('reader-content').innerHTML = chapter.content;
+            
+            const myModal = new bootstrap.Modal(document.getElementById('readerModal'));
+            myModal.show();
         }
 
         function startNewQuiz() {
