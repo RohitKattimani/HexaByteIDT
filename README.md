@@ -56,7 +56,7 @@ HEXABYTE is built with **serverless security-first architecture**:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/hexabyte.git
+git clone https://github.com/RohitKattimani/hexabyteidt.git
 cd hexabyte
 
 # Set up environment variables
