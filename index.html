@@ -355,15 +355,16 @@
         }
 
         async function analyzeThreat() {
-            const text = document.getElementById('scanner-input').value.trim();
-            if(!text) return;
-            
-            // UI Logic...
+            const textInput = document.getElementById('scanner-input').value.trim();
+            if (!textInput) return;
+        
+            // 1. Get UI Elements
             const loader = document.getElementById('scanner-loader');
             const resBox = document.getElementById('scanner-result');
             const resText = document.getElementById('ai-response-text');
             const btn = document.getElementById('scan-btn');
-            
+        
+            // 2. Start Loading State
             btn.disabled = true;
             loader.classList.remove('d-none');
             resBox.classList.add('d-none');
@@ -372,19 +373,25 @@
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: input })
+                    body: JSON.stringify({ text: textInput }) // FIXED: Matches the 'text' variable
                 });
         
                 const data = await response.json();
-                
-                // This displays the AI's actual response or the specific API error
-                scanResult.innerText = data.content; 
+        
+                // 3. Display Result
+                resText.innerText = data.content || "No analysis generated."; 
+                resBox.classList.remove('d-none'); // Show the result box
         
             } catch (error) {
                 console.error("Connection Error:", error);
-                scanResult.innerText = "Error: Could not connect to HEXABYTE API. Ensure you are running through Vercel.";
+                resText.innerText = "Error: Could not connect to HEXABYTE API. Ensure you are running through 'vercel dev'.";
+                resBox.classList.remove('d-none');
+            } finally {
+                // 4. STOP the spinner no matter what
+                loader.classList.add('d-none');
+                btn.disabled = false;
             }
-        }
+}
     </script>
 </body>
 </html>
