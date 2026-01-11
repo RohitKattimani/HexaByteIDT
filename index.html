@@ -369,24 +369,20 @@
             resBox.classList.add('d-none');
         
             try {
-                // CALL THAT INTERNAL API INSTEAD OF OPENROUTER
-                const response = await fetch("/api/analyze", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ text: text })
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: input })
                 });
-                
+        
                 const data = await response.json();
                 
-                // OpenRouter returns choices[0].message.content
-                resText.innerText = data.choices[0].message.content;
-                resBox.classList.remove('d-none');
-            } catch (e) { 
-                resText.innerText = "Error: System Offline."; 
-                resBox.classList.remove('d-none'); 
-            } finally { 
-                loader.classList.add('d-none'); 
-                btn.disabled = false; 
+                // This displays the AI's actual response or the specific API error
+                scanResult.innerText = data.content; 
+        
+            } catch (error) {
+                console.error("Connection Error:", error);
+                scanResult.innerText = "Error: Could not connect to HEXABYTE API. Ensure you are running through Vercel.";
             }
         }
     </script>
