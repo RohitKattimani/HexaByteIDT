@@ -11,6 +11,7 @@ model = AutoModelForCausalLM.from_pretrained(
 )
 
 # System Prompt defined in index.html
+# API system RESTful via analyze.js
 messages = [
     {"role": "system", "content": "You are a helpful assistant."},
     {"role": "user", "content": "Explain the process of photosynthesis in simple terms."},
@@ -40,3 +41,4 @@ outputs = model.generate(
 
 response = outputs[0][input_ids.shape[-1]:]
 print(tokenizer.decode(response, skip_special_tokens=True))
+
