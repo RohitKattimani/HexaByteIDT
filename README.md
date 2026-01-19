@@ -2,7 +2,7 @@
 
 > *"Knowledge is defense. Defense is survival."*
 
-HEXABYTE is an advanced **cybersecurity awareness platform** designed to train the public in spotting digital threats. By combining **randomized security simulations** with a **Llama 3.1 AI-powered heuristic engine**, HEXABYTE transforms passive learning into active defense.
+HEXABYTE is an advanced **cybersecurity awareness platform** designed to train the public in spotting digital threats. By combining **randomized security simulations** with a **Llama 3.1 8B AI-powered heuristic engine**, HEXABYTE transforms passive learning into active defense.
 
 ---
 
