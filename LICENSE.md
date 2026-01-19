@@ -13,7 +13,7 @@ The software known as **HEXABYTE (Core v4.0)**, including but not limited to its
 No person, organization, or entity is permitted to:
 
 - **Replicate or Clone**  
-  Copy, duplicate, or mirror the source code or UI/UX design for any purpose, public or private.
+  Copy, duplicate, or mirror the source code, or UI/UX design for any purpose, public or private.
 
 - **Modify**  
   Create derivative works or modify the existing codebase.
