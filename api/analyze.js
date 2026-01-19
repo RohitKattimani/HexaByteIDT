@@ -45,7 +45,7 @@ Your response must follow this strict format:
     }
 
     // 5. Success: Return the AI's analysis
-    // We send 'content' back so your frontend code can easily display it.
+    // This way we can send 'content' back so your frontend code can easily display it.
     const aiResponse = data.choices?.[0]?.message?.content || "No analysis generated.";
     res.status(200).json({ content: aiResponse });
 
